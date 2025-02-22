@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import {
@@ -14,7 +15,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
-import Image from "next/image";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -185,7 +185,7 @@ export default function Landing() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Image
+                <img
                   src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
                   alt="Exemplo de Análise"
                   className="rounded-lg shadow-xl"

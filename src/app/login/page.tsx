@@ -47,7 +47,7 @@ export default function Login() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="seu@email.com"
                   required
                 />
@@ -61,7 +61,7 @@ export default function Login() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="••••••••"
                   required
                 />
@@ -80,23 +80,17 @@ export default function Login() {
               <span className="mx-4 text-gray-500">ou</span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-            {/* 
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all shadow-md py-3 font-semibold flex items-center justify-center gap-2"
-            >
-              <Image src={Google} alt="Google" className="h-5 w-5" />
-              Entrar com Google
-            </button> */}
-            <GoogleLogin
-            width={'100%'}
-              onSuccess={(response) => {
-                console.log("Login bem-sucedido!", response);
-              }}
-              onError={() => {
-                console.error("Erro no login com Google");
-              }}
-            />
+            <div>
+              <GoogleLogin
+                width={''}
+                onSuccess={(response) => {
+                  console.log("Login bem-sucedido!", response);
+                }}
+                onError={() => {
+                  console.error("Erro no login com Google");
+                }}
+              />
+            </div>
 
             <p className="text-center mt-6 text-gray-600">
               Não tem uma conta?{" "}
