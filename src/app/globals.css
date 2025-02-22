@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-button {
-  cursor: pointer;
+body::-webkit-scrollbar {
+  width: 0;
 }
