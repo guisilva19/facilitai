@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { BookOpen, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import 'dotenv/config'
+import "dotenv/config";
+import Image from "next/image";
+import Facilitai from "@/assets/logo.svg";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -27,7 +29,11 @@ export default function Register() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
             <div className="flex items-center justify-center mb-8">
               <Link href="/" className="flex items-center group">
-                <BookOpen className="h-8 w-8 text-emerald-600 transition-transform group-hover:scale-110" />
+                <Image
+                  src={Facilitai}
+                  alt="logo"
+                  className="h-10 w-10 text-emerald-600 transition-transform group-hover:scale-110"
+                />
                 <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                   FACILITAI
                 </span>
@@ -98,7 +104,6 @@ export default function Register() {
             <div>
               <GoogleLogin
                 width={""}
-                
                 onSuccess={(response) => {
                   console.log("Login bem-sucedido!", response);
                 }}

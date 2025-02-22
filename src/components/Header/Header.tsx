@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { BookOpen, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Facilitai from "@/assets/logo.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,8 +20,12 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center group">
-            <BookOpen className="h-8 w-8 text-emerald-600 transition-transform group-hover:scale-110" />
+          <Link href="/" className="flex items-center justify-center group">
+            <Image
+              src={Facilitai}
+              alt="logo"
+              className="h-10 w-10 text-emerald-600 transition-transform group-hover:scale-110"
+            />
             <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               FACILITAI
             </span>
