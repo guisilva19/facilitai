@@ -89,6 +89,7 @@ export default function Login() {
               Entrar com Google
             </button> */}
             <GoogleLogin
+            width={'100%'}
               onSuccess={(response) => {
                 console.log("Login bem-sucedido!", response);
               }}
