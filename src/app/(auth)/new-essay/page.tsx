@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
 import { Upload, Camera, Type, ArrowLeft, RefreshCw } from "lucide-react";

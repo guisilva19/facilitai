@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Calendar, Clock, ChevronRight } from "lucide-react";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
+import Image from "next/image";
 
 const blogPosts = [
   {
@@ -74,7 +75,7 @@ export default function BlogPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.2 }}
                 >
-                  <img
+                  <Image
                     src={post.image}
                     alt={post.title}
                     className="w-full h-48 object-cover"
