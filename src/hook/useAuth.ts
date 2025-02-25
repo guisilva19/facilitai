@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_FACILITAI_API;
 
@@ -7,6 +9,7 @@ export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const savedToken = getCookie("auth_token");
@@ -15,7 +18,7 @@ export function useAuth() {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, senha: string) => {
     setLoading(true);
     setError(null);
 
@@ -25,16 +28,22 @@ export function useAuth() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, senha }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) throw new Error(data.message || "Erro ao fazer login");
+      if (!response.ok) {
+        throw new Error("Ops! Login não autorizado!");
+      } else {
+        toast.success("Login feito com sucesso!");
+        router.replace("/dashboard");
+      }
 
       setCookie("auth_token", data.token, 30);
       setToken(data.token);
     } catch (err: any) {
+      toast.error(err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -44,6 +53,7 @@ export function useAuth() {
   const logout = () => {
     deleteCookie("auth_token");
     setToken(null);
+    router.replace("/");
   };
 
   return { token, login, logout, loading, error };

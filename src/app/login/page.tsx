@@ -1,21 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { BookOpen, LogIn } from "lucide-react";
+import { BookOpen, Eye, EyeClosed, LogIn } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { authSchema } from "@/utils/schema";
+import { useAuth } from "@/hook/useAuth";
+import { SyncLoader } from "react-spinners";
+
+interface Auth {
+  email: string;
+  senha: string;
+}
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implementar lógica de autenticação com email/senha
-    router.push("/dashboard");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Auth>({
+    resolver: yupResolver(authSchema),
+  });
+
+  const { login, loading } = useAuth();
+
+  const handleAuth = async ({ email, senha }: Auth) => {
+    await login(email, senha);
   };
 
   return (
@@ -38,40 +53,62 @@ export default function Login() {
               Bem-vindo de volta!
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(handleAuth)} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register("email")}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="seu@email.com"
-                  required
+                  disabled={loading}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Senha
                 </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  placeholder="••••••••"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    {...register("senha")}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    placeholder="••••••••"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <Eye /> : <EyeClosed />}
+                  </button>
+                </div>
+                {errors.senha && (
+                  <p className="text-red-500 text-sm">{errors.senha.message}</p>
+                )}
               </div>
 
               <button
+                disabled={loading}
                 type="submit"
-                className="w-full bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md py-3 font-semibold flex items-center justify-center gap-2"
+                className="w-full h-12 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md py-3 font-semibold flex items-center justify-center gap-2"
               >
-                <LogIn className="h-5 w-5" /> Entrar
+                {loading ? (
+                  <>
+                    <SyncLoader size={8} color="#fff" loading={loading} />
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-5 w-5" /> Entrar
+                  </>
+                )}
               </button>
             </form>
 
@@ -82,7 +119,7 @@ export default function Login() {
             </div>
             <div>
               <GoogleLogin
-                width={''}
+                width={""}
                 onSuccess={(response) => {
                   console.log("Login bem-sucedido!", response);
                 }}
