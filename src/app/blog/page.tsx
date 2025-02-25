@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
@@ -75,7 +76,7 @@ export default function BlogPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.2 }}
                 >
-                  <Image
+                  <img
                     src={post.image}
                     alt={post.title}
                     className="w-full h-48 object-cover"

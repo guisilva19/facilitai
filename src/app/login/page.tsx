@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { BookOpen, LogIn } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import "dotenv/config";
+
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = useState("");

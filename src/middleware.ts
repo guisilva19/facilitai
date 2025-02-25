@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // Verifique se o token existe nos cookies, localStorage não é acessível aqui
-  const token = request.cookies.get("token");
+  // Verifique se o token existe nos cookies
+  const token = request.cookies.get("auth_token");
 
   // Caso não haja token, redireciona para a página de login
   if (!token) {
@@ -16,5 +16,5 @@ export function middleware(request: NextRequest) {
 
 // Defina os caminhos que esse middleware deve aplicar
 export const config = {
-  matcher: [], // Defina as páginas protegidas aqui
+  matcher: ["/dashboard", "/profile", "/settings"], // Rotas protegidas
 };
