@@ -39,8 +39,8 @@ export default function Login() {
   };
 
   const handleAuthGoogle = async (token: string | undefined) => {
-    if(!token) {
-      toast.error("Não foi possivel fazer login via Google")
+    if (!token) {
+      toast.error("Não foi possivel fazer login via Google");
     }
 
     await login("", "", true, token);
@@ -141,7 +141,7 @@ export default function Login() {
                 width={"100%"}
                 onSuccess={(response) => handleAuthGoogle(response.credential)}
                 onError={() => {
-                  console.error("Erro no login com Google");
+                  toast.error("Ops! Login não autorizado!");
                 }}
               />
             </div>

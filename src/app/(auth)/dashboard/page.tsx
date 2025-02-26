@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
 import {
@@ -26,13 +27,12 @@ export default function App() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const mockUser = {
-    name: "João Silva",
-    email: "joao@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    name: user?.nome,
+    email: user?.email,
+    avatar: user?.foto ? user.foto : `https://avatar.oxro.io/avatar.svg?name=${user?.nome}`,
     isPremium: false,
     stats: {
       totalEssays: 12,
@@ -383,8 +383,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.nav className="bg-white shadow-sm"  initial="hidden" animate="visible">
+        <motion.div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"  variants={fadeInUp}>
           <div className="flex justify-between h-16">
             <Link href="/dashboard" className="flex items-center group">
               <BookOpen className="h-8 w-8 text-emerald-600 transition-transform group-hover:scale-110" />
@@ -403,7 +403,7 @@ export default function App() {
                 <img
                   className="h-8 w-8 rounded-full"
                   src={mockUser.avatar}
-                  alt="User avatar"
+                  alt={mockUser.name}
                 />
                 <span className="ml-2 text-gray-700">{mockUser.name}</span>
               </div>
@@ -419,8 +419,8 @@ export default function App() {
               </button>
             </div>
           </div>
-        </div>
-      </nav>
+        </motion.div>
+      </motion.nav>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (

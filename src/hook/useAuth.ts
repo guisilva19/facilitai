@@ -5,16 +5,27 @@ import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_FACILITAI_API;
 
+interface UserAccount {
+  id: string;
+  email: string;
+  nome: string;
+  foto: string;
+  telefone: string;
+}
+
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserAccount | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const savedToken = getCookie("auth_token");
+    const savedUser = JSON.parse(getCookie("auth_user") as string);
     if (savedToken) {
       setToken(savedToken);
+      setUser(savedUser);
     }
   }, []);
 
@@ -49,6 +60,7 @@ export function useAuth() {
       }
 
       setCookie("auth_token", data.token, 1);
+      setCookie("auth_user", JSON.stringify(data.user), 1);
       setToken(data.token);
     } catch (err: any) {
       toast.error(err.message);
@@ -60,11 +72,12 @@ export function useAuth() {
 
   const logout = () => {
     deleteCookie("auth_token");
+    deleteCookie("auth_user");
     setToken(null);
     router.replace("/");
   };
 
-  return { token, login, logout, loading, error };
+  return { token, login, logout, loading, error, user };
 }
 
 const setCookie = (name: string, value: string, days: number) => {

@@ -127,7 +127,7 @@ export default function Register() {
                 width={""}
                 onSuccess={(response) => handleAuthGoogle(response.credential)}
                 onError={() => {
-                  console.error("Erro no login com Google");
+                  toast.error("Ops! Login não autorizado!");
                 }}
               />
             </div>
