@@ -7,17 +7,30 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import "dotenv/config";
 import Image from "next/image";
 import Facilitai from "@/assets/logo.svg";
+import toast from "react-hot-toast";
+import { useAuth } from "@/hook/useAuth";
+import { SyncLoader } from "react-spinners";
 
 export default function Register() {
+  const { login, loading } = useAuth();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual registration logic
     navigate.push("/dashboard");
+  };
+
+  const handleAuthGoogle = async (token: string | undefined) => {
+    if (!token) {
+      toast.error("Não foi possivel fazer login via Google");
+    }
+
+    await login("", "", true, token);
   };
 
   return (
@@ -89,10 +102,18 @@ export default function Register() {
 
               <button
                 type="submit"
-                className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
               >
-                <UserPlus className="h-5 w-5" />
-                Cadastrar
+                {loading ? (
+                  <>
+                    <SyncLoader size={8} color="#fff" loading={loading} />
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-5 w-5" />
+                    Cadastrar
+                  </>
+                )}
               </button>
             </form>
 
@@ -104,9 +125,7 @@ export default function Register() {
             <div>
               <GoogleLogin
                 width={""}
-                onSuccess={(response) => {
-                  console.log("Login bem-sucedido!", response);
-                }}
+                onSuccess={(response) => handleAuthGoogle(response.credential)}
                 onError={() => {
                   console.error("Erro no login com Google");
                 }}
