@@ -136,15 +136,13 @@ export default function Login() {
               <span className="mx-4 text-gray-500">ou</span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-            <div>
               <GoogleLogin
-                width={"100%"}
+                size="large"
                 onSuccess={(response) => handleAuthGoogle(response.credential)}
                 onError={() => {
                   toast.error("Ops! Login não autorizado!");
                 }}
               />
-            </div>
 
             <p className="text-center mt-6 text-gray-600">
               Não tem uma conta?{" "}

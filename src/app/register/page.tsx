@@ -122,15 +122,13 @@ export default function Register() {
               <span className="mx-4 text-gray-500">ou</span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-            <div>
-              <GoogleLogin
-                width={""}
-                onSuccess={(response) => handleAuthGoogle(response.credential)}
-                onError={() => {
-                  toast.error("Ops! Login não autorizado!");
-                }}
-              />
-            </div>
+            <GoogleLogin
+              size="large"
+              onSuccess={(response) => handleAuthGoogle(response.credential)}
+              onError={() => {
+                toast.error("Ops! Login não autorizado!");
+              }}
+            />
 
             <p className="text-center mt-6 text-gray-600">
               Já tem uma conta?{" "}
