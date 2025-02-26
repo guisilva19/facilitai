@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BookOpen, Eye, EyeClosed, LogIn } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { authSchema } from "@/utils/schema";
 import { useAuth } from "@/hook/useAuth";
 import { SyncLoader } from "react-spinners";
+import { useRouter } from "next/navigation";
+
+import Link from "next/link";
 
 interface Auth {
   email: string;
@@ -27,11 +29,23 @@ export default function Login() {
     resolver: yupResolver(authSchema),
   });
 
-  const { login, loading } = useAuth();
+  const router = useRouter();
+
+  const { login, loading, token } = useAuth();
 
   const handleAuth = async ({ email, senha }: Auth) => {
     await login(email, senha);
   };
+
+  const handleAuthGoogle = async (token: string) => {
+    await login("", "", true, token);
+  };
+
+  useEffect(() => {
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, [token]);
 
   return (
     <>
@@ -119,10 +133,8 @@ export default function Login() {
             </div>
             <div>
               <GoogleLogin
-                width={""}
-                onSuccess={(response) => {
-                  console.log("Login bem-sucedido!", response);
-                }}
+                width={"100%"}
+                onSuccess={(response) => handleAuthGoogle(response.credential)}
                 onError={() => {
                   console.error("Erro no login com Google");
                 }}

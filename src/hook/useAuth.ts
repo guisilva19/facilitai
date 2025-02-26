@@ -18,18 +18,26 @@ export function useAuth() {
     }
   }, []);
 
-  const login = async (email: string, senha: string) => {
+  const login = async (
+    email?: string,
+    senha?: string,
+    google: boolean = false,
+    token?: string
+  ) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/auth`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, senha }),
-      });
+      const response = await fetch(
+        `${API_URL}/auth${google ? "/google" : ""}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(google ? { token } : { email, senha }),
+        }
+      );
 
       const data = await response.json();
 
@@ -40,7 +48,7 @@ export function useAuth() {
         router.replace("/dashboard");
       }
 
-      setCookie("auth_token", data.token, 30);
+      setCookie("auth_token", data.token, 1);
       setToken(data.token);
     } catch (err: any) {
       toast.error(err.message);

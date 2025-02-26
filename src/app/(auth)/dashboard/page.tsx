@@ -69,6 +69,7 @@ export default function App() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
+
   const renderDashboard = () => (
     <motion.div initial="hidden" animate="visible" className="space-y-6">
       {/* Quick Stats */}
@@ -192,88 +193,121 @@ export default function App() {
   );
 
   const renderProfile = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm p-6">
+    <motion.div initial="hidden" animate="visible" className="space-y-6">
+      <motion.div
+        className="bg-white rounded-lg shadow-sm p-6"
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="flex flex-col items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-8">
-          <div className="relative">
+          <motion.div className="relative" variants={fadeInUp}>
             <img
               src={mockUser.avatar}
               alt="Profile"
               className="w-24 sm:w-32 h-24 sm:h-32 rounded-full object-cover"
             />
-            <button
+            <motion.button
               className="absolute bottom-0 right-0 p-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors"
+              whileHover={{ scale: 1.1 }}
               onClick={() => {
                 /* Handle avatar update */
               }}
             >
               <Camera className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
           <div className="flex-1 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start space-x-4 mb-4">
+            <motion.div
+              className="flex items-center justify-center md:justify-start space-x-4 mb-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 {mockUser.name}
               </h2>
-              <button
+              <motion.button
                 onClick={() => setEditingProfile(!editingProfile)}
                 className="p-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                whileHover={{ scale: 1.1 }}
               >
                 <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
             <p className="text-gray-600 mb-4">{mockUser.email}</p>
             {mockUser.isPremium ? (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
+              <motion.span
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
                 <Crown className="h-4 w-4 mr-1" />
                 Premium
-              </span>
+              </motion.span>
             ) : (
-              <button className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <motion.button
+                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all"
+                whileHover={{ scale: 1.05 }}
+              >
                 <Crown className="h-4 w-4 inline mr-2" />
                 Upgrade para Premium
-              </button>
+              </motion.button>
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <motion.div
+        className="bg-white rounded-lg shadow-sm p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">
           Estatísticas
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">Total de Redações</p>
-            <p className="text-xl sm:text-2xl font-semibold text-emerald-600">
-              {mockUser.stats.totalEssays}
-            </p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">Média Geral</p>
-            <p className="text-xl sm:text-2xl font-semibold text-emerald-600">
-              {mockUser.stats.averageScore}
-            </p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">Melhor Nota</p>
-            <p className="text-xl sm:text-2xl font-semibold text-emerald-600">
-              {mockUser.stats.bestScore}
-            </p>
-          </div>
+          {["totalEssays", "averageScore", "bestScore"].map((stat, index) => (
+            <motion.div
+              key={stat}
+              className="p-4 bg-gray-50 rounded-lg"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+            >
+              <p className="text-sm text-gray-600">
+                {stat === "totalEssays"
+                  ? "Total de Redações"
+                  : stat === "averageScore"
+                  ? "Média Geral"
+                  : "Melhor Nota"}
+              </p>
+              <p className="text-xl sm:text-2xl font-semibold text-emerald-600">
+                {mockUser.stats.bestScore}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   const renderSettings = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm p-6">
+    <motion.div initial="hidden" animate="visible" className="space-y-6">
+      <motion.div
+        variants={fadeInUp} // Animar individualmente cada bloco de conteúdo
+        className="bg-white rounded-lg shadow-sm p-6"
+      >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">
           Configurações da Conta
         </h3>
         <div className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <motion.div
+            variants={fadeInUp} // Aplica animação aqui também
+            className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg"
+          >
             <div className="mb-4 md:mb-0">
               <div className="flex items-center">
                 <Mail className="h-5 w-5 text-gray-600 mr-2" />
@@ -284,9 +318,12 @@ export default function App() {
             <button className="w-full md:w-auto px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
               Alterar Email
             </button>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <motion.div
+            variants={fadeInUp} // Aplica animação aqui também
+            className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg"
+          >
             <div className="mb-4 md:mb-0">
               <div className="flex items-center">
                 <Lock className="h-5 w-5 text-gray-600 mr-2" />
@@ -297,61 +334,14 @@ export default function App() {
             <button className="w-full md:w-auto px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
               Alterar Senha
             </button>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">
-          Notificações
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Bell className="h-5 w-5 text-gray-600 mr-2" />
-              <span>Novas Redações Disponíveis</span>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                defaultChecked={mockUser.notifications.newEssays}
-              />
-              <div className="input-switch"></div>
-            </label>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Bell className="h-5 w-5 text-gray-600 mr-2" />
-              <span>Feedback de Redações</span>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                defaultChecked={mockUser.notifications.feedback}
-              />
-              <div className="input-switch"></div>
-            </label>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Bell className="h-5 w-5 text-gray-600 mr-2" />
-              <span>Atualizações do Sistema</span>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                defaultChecked={mockUser.notifications.updates}
-              />
-              <div className="input-switch"></div>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      {/* <motion.div
+        variants={fadeInUp}
+        className="bg-white rounded-lg shadow-sm p-6"
+      >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Aparência</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -363,9 +353,12 @@ export default function App() {
             <div className="input-switch"></div>
           </label>
         </div>
-      </div>
+      </motion.div> */}
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <motion.div
+        variants={fadeInUp}
+        className="bg-white rounded-lg shadow-sm p-6"
+      >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Sessão</h3>
         <button
           onClick={logout}
@@ -374,8 +367,8 @@ export default function App() {
           <LogOut className="h-5 w-5 mr-2" />
           Sair da Conta
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   const renderContent = () => {
