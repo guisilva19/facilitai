@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Calendar, Clock, ChevronRight } from "lucide-react";
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
-import Image from "next/image";
 
 const blogPosts = [
   {

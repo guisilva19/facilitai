@@ -10,8 +10,6 @@ import {
   User,
   Mail,
   Lock,
-  Bell,
-  Palette,
   LogOut,
   Camera,
   Edit,

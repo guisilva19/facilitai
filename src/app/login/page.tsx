@@ -12,6 +12,7 @@ import { SyncLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 interface Auth {
   email: string;
@@ -37,7 +38,11 @@ export default function Login() {
     await login(email, senha);
   };
 
-  const handleAuthGoogle = async (token: string) => {
+  const handleAuthGoogle = async (token: string | undefined) => {
+    if(!token) {
+      toast.error("Não foi possivel fazer login via Google")
+    }
+
     await login("", "", true, token);
   };
 
