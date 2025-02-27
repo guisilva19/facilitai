@@ -11,23 +11,47 @@ interface UserAccount {
   nome: string;
   foto: string;
   telefone: string;
+  isPremium: boolean;
 }
 
 export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserAccount | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingUser, setLoadingUser] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
     const savedToken = getCookie("auth_token");
-    const savedUser = JSON.parse(getCookie("auth_user") as string);
+
     if (savedToken) {
       setToken(savedToken);
-      setUser(savedUser);
+      const user = await getUser(savedToken);
+      setUser(user);
     }
-  }, []);
+  };
+
+  const getUser = async (token: string) => {
+    try {
+      setLoadingUser(true);
+      const response = await fetch(`${API_URL}/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return await response.json();
+    } finally {
+      setLoadingUser(false);
+    }
+  };
 
   const login = async (
     email?: string,
@@ -60,7 +84,6 @@ export function useAuth() {
       }
 
       setCookie("auth_token", data.token, 1);
-      setCookie("auth_user", JSON.stringify(data.user), 1);
       setToken(data.token);
     } catch (err: any) {
       toast.error(err.message);
@@ -72,12 +95,11 @@ export function useAuth() {
 
   const logout = () => {
     deleteCookie("auth_token");
-    deleteCookie("auth_user");
     setToken(null);
     router.replace("/");
   };
 
-  return { token, login, logout, loading, error, user };
+  return { token, login, logout, loading, error, user, loadingUser };
 }
 
 const setCookie = (name: string, value: string, days: number) => {

@@ -21,18 +21,21 @@ import { useAuth } from "@/hook/useAuth";
 import { motion } from "framer-motion";
 
 import Link from "next/link";
+import Loader from "@/components/Loader/Loader";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [editingProfile, setEditingProfile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { logout, user } = useAuth();
+  const { logout, user, loadingUser } = useAuth();
 
   const mockUser = {
     name: user?.nome,
     email: user?.email,
-    avatar: user?.foto ? user.foto : `https://avatar.oxro.io/avatar.svg?name=${user?.nome}`,
+    avatar: user?.foto
+      ? user.foto
+      : `https://avatar.oxro.io/avatar.svg?name=${user?.nome}`,
     isPremium: false,
     stats: {
       totalEssays: 12,
@@ -65,7 +68,7 @@ export default function App() {
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.6 }, },
   };
 
   const renderDashboard = () => (
@@ -381,152 +384,162 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation */}
-      <motion.nav className="bg-white shadow-sm"  initial="hidden" animate="visible">
-        <motion.div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"  variants={fadeInUp}>
-          <div className="flex justify-between h-16">
-            <Link href="/dashboard" className="flex items-center group">
-              <BookOpen className="h-8 w-8 text-emerald-600 transition-transform group-hover:scale-110" />
-              <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                FACILITAI
-              </span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <div className="hidden lg:flex items-center">
-                {!mockUser.isPremium && (
-                  <button className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center">
-                    <Crown className="h-4 w-4 mr-2" />
-                    Seja Premium
-                  </button>
-                )}
-                <img
-                  className="h-8 w-8 rounded-full"
-                  src={mockUser.avatar}
-                  alt={mockUser.name}
-                />
-                <span className="ml-2 text-gray-700">{mockUser.name}</span>
+    <>
+      {loadingUser && <Loader />}
+      <div className="min-h-screen bg-gray-50">
+        {/* Top Navigation */}
+        <motion.nav
+          className="bg-white shadow-sm"
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+            variants={fadeInUp}
+          >
+            <div className="flex justify-between h-16">
+              <Link href="/dashboard" className="flex items-center group">
+                <BookOpen className="h-8 w-8 text-emerald-600 transition-transform group-hover:scale-110" />
+                <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  FACILITAI
+                </span>
+              </Link>
+              <div className="flex items-center space-x-4">
+                <div className="hidden lg:flex items-center">
+                  {!mockUser.isPremium && (
+                    <button className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center">
+                      <Crown className="h-4 w-4 mr-2" />
+                      Seja Premium
+                    </button>
+                  )}
+                  <img
+                    className="h-8 w-8 rounded-full"
+                    src={mockUser.avatar}
+                    alt={mockUser.name}
+                  />
+                  <span className="ml-2 text-gray-700">{mockUser.name}</span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
+                </button>
               </div>
+            </div>
+          </motion.div>
+        </motion.nav>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1">
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+                onClick={() => {
+                  setActiveTab("dashboard");
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                  activeTab === "dashboard"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
               >
-                {mobileMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
+                Dashboard
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("profile");
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                  activeTab === "profile"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                Meu Perfil
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("settings");
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                  activeTab === "settings"
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                Configurações
               </button>
             </div>
           </div>
-        </motion.div>
-      </motion.nav>
+        )}
 
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <button
-              onClick={() => {
-                setActiveTab("dashboard");
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                activeTab === "dashboard"
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab("profile");
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                activeTab === "profile"
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Meu Perfil
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab("settings");
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                activeTab === "settings"
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              Configurações
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar */}
-          <div className="hidden lg:block lg:col-span-1">
-            <div className="flex flex-col bg-white rounded-lg shadow-sm p-4">
-              <div className="flex flex-col justify-between">
-                <button
-                  onClick={() => setActiveTab("dashboard")}
-                  className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
-                    activeTab === "dashboard"
-                      ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
-                      : "nav-link-inactive hover:bg-gray-100"
-                  }`}
-                >
-                  <TrendingUp className="h-5 w-5 mr-3" />
-                  Dashboard
-                </button>
-                <button
-                  onClick={() => setActiveTab("essays")}
-                  className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
-                    activeTab === "essays"
-                      ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
-                      : "nav-link-inactive hover:bg-gray-100"
-                  }`}
-                >
-                  <BookOpen className="h-5 w-5 mr-3" />
-                  Minhas Redações
-                </button>
-                <button
-                  onClick={() => setActiveTab("profile")}
-                  className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
-                    activeTab === "profile"
-                      ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
-                      : "nav-link-inactive hover:bg-gray-100"
-                  }`}
-                >
-                  <User className="h-5 w-5 mr-3" />
-                  Meu Perfil
-                </button>
-                <button
-                  onClick={() => setActiveTab("settings")}
-                  className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
-                    activeTab === "settings"
-                      ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
-                      : "nav-link-inactive hover:bg-gray-100"
-                  }`}
-                >
-                  <Settings className="h-5 w-5 mr-3" />
-                  Configurações
-                </button>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Sidebar */}
+            <div className="hidden lg:block lg:col-span-1">
+              <div className="flex flex-col bg-white rounded-lg shadow-sm p-4">
+                <div className="flex flex-col justify-between">
+                  <button
+                    onClick={() => setActiveTab("dashboard")}
+                    className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
+                      activeTab === "dashboard"
+                        ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
+                        : "nav-link-inactive hover:bg-gray-100"
+                    }`}
+                  >
+                    <TrendingUp className="h-5 w-5 mr-3" />
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("essays")}
+                    className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
+                      activeTab === "essays"
+                        ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
+                        : "nav-link-inactive hover:bg-gray-100"
+                    }`}
+                  >
+                    <BookOpen className="h-5 w-5 mr-3" />
+                    Minhas Redações
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("profile")}
+                    className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
+                      activeTab === "profile"
+                        ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
+                        : "nav-link-inactive hover:bg-gray-100"
+                    }`}
+                  >
+                    <User className="h-5 w-5 mr-3" />
+                    Meu Perfil
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className={`nav-link flex items-center h-14 transition-colors duration-200 rounded-lg px-2 ${
+                      activeTab === "settings"
+                        ? "bg-blue-100 border-l-4 border-emerald-500 text-emerald-700"
+                        : "nav-link-inactive hover:bg-gray-100"
+                    }`}
+                  >
+                    <Settings className="h-5 w-5 mr-3" />
+                    Configurações
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-3">{renderContent()}</div>
+            {/* Main Content */}
+            <div className="lg:col-span-3">{renderContent()}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
