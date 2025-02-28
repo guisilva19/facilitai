@@ -22,21 +22,25 @@ import { motion } from "framer-motion";
 
 import Link from "next/link";
 import Loader from "@/components/Loader/Loader";
+import { useRouter } from "next/navigation";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [editingProfile, setEditingProfile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const router = useRouter();
+
   const { logout, user, loadingUser } = useAuth();
 
   const mockUser = {
     name: user?.nome,
     email: user?.email,
+    telefone: user?.telefone,
     avatar: user?.foto
       ? user.foto
       : `https://avatar.oxro.io/avatar.svg?name=${user?.nome}`,
-    isPremium: false,
+    isPremium: user?.isPremium,
     stats: {
       totalEssays: 12,
       averageScore: 780,
@@ -68,11 +72,39 @@ export default function App() {
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.6 }, },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.6 } },
   };
 
   const renderDashboard = () => (
     <motion.div initial="hidden" animate="visible" className="space-y-6">
+      {/* Premium Banner */}
+      {!mockUser.isPremium && (
+        <motion.div
+          variants={fadeInUp}
+          className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg shadow-sm p-4 sm:p-6 text-white"
+        >
+          <div className="flex flex-col sm:flex-row items-center justify-between">
+            <div className="text-center sm:text-left mb-4 sm:mb-0">
+              <h3 className="text-xl font-bold mb-2">
+                Desbloqueie Todos os Recursos
+              </h3>
+              <p className="mb-4">
+                Torne-se premium e tenha acesso ilimitado a todas as
+                funcionalidades.
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="px-6 py-2 bg-white text-amber-600 rounded-lg shadow-sm hover:shadow-md transition-all"
+                onClick={() => router.push("/pricing")}
+              >
+                Ver Planos
+              </motion.button>
+            </div>
+            <Crown className="h-16 w-16 opacity-90" />
+          </div>
+        </motion.div>
+      )}
+
       {/* Quick Stats */}
       <motion.div
         variants={fadeInUp}
@@ -163,33 +195,6 @@ export default function App() {
           ))}
         </div>
       </motion.div>
-
-      {/* Premium Banner */}
-      {!mockUser.isPremium && (
-        <motion.div
-          variants={fadeInUp}
-          className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg shadow-sm p-4 sm:p-6 text-white"
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-between">
-            <div className="text-center sm:text-left mb-4 sm:mb-0">
-              <h3 className="text-xl font-bold mb-2">
-                Desbloqueie Todos os Recursos
-              </h3>
-              <p className="mb-4">
-                Torne-se premium e tenha acesso ilimitado a todas as
-                funcionalidades.
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                className="px-6 py-2 bg-white text-amber-600 rounded-lg shadow-sm hover:shadow-md transition-all"
-              >
-                Ver Planos
-              </motion.button>
-            </div>
-            <Crown className="h-16 w-16 opacity-90" />
-          </div>
-        </motion.div>
-      )}
     </motion.div>
   );
 
@@ -407,7 +412,12 @@ export default function App() {
               <div className="flex items-center space-x-4">
                 <div className="hidden lg:flex items-center">
                   {!mockUser.isPremium && (
-                    <button className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center">
+                    <button
+                      onClick={() => {
+                        router.push("/pricing");
+                      }}
+                      className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
+                    >
                       <Crown className="h-4 w-4 mr-2" />
                       Seja Premium
                     </button>
@@ -417,7 +427,6 @@ export default function App() {
                     src={mockUser.avatar}
                     alt={mockUser.name}
                   />
-                  <span className="ml-2 text-gray-700">{mockUser.name}</span>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

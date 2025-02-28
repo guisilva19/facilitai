@@ -1,12 +1,23 @@
 "use client";
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
-import Link from "next/link";
+import { Crown, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getCookie } from "@/hook/useAuth";
+import { useRouter } from "next/navigation";
+
+import Link from "next/link";
 import Image from "next/image";
 import Facilitai from "@/assets/logo.svg";
 
 export default function Header() {
+  const foto = getCookie("auth_user_foto");
+  const premium = Boolean(getCookie("auth_user_premium"));
+  const token = getCookie("auth_token");
+
+  console.log(premium);
+
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
@@ -46,18 +57,41 @@ export default function Header() {
           </nav>
 
           {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
-              <button className="px-6 py-2 bg-transparent border-2 border-emerald-600 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-all hover:scale-105">
-                Entrar
-              </button>
-            </Link>
-            <Link href="/register">
-              <button className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all hover:scale-105 shadow-md hover:shadow-lg">
-                Comece Agora
-              </button>
-            </Link>
-          </div>
+          {!token ? (
+            <div className="hidden md:flex items-center gap-4">
+              <Link href="/login">
+                <button className="px-6 py-2 bg-transparent border-2 border-emerald-600 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-all hover:scale-105">
+                  Entrar
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all hover:scale-105 shadow-md hover:shadow-lg">
+                  Comece Agora
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center">
+              {!premium && (
+                <button
+                  onClick={() => router.push("/pricing")}
+                  className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  Seja Premium
+                </button>
+              )}
+              <Link href={"/dashboard"} className="flex items-center">
+                <Image
+                  className="h-10 w-10 rounded-full"
+                  src={foto ? foto : ""}
+                  alt={"avatar"}
+                  width={40}
+                  height={40}
+                />
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -94,18 +128,36 @@ export default function Header() {
                     {item.label}
                   </Link>
                 ))}
-                <div className="flex flex-col gap-3 pt-4 border-t">
-                  <Link href="/login">
-                    <button className="w-full px-6 py-2 bg-transparent border-2 border-emerald-600 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-all">
-                      Entrar
-                    </button>
-                  </Link>
-                  <Link href="/register">
-                    <button className="w-full px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md">
-                      Comece Agora
-                    </button>
-                  </Link>
-                </div>
+                {token ? (
+                  <div className="flex items-center gap-3 pt-4 border-t">
+                    <Image
+                      src={foto ? foto : ""}
+                      alt="Avatar"
+                      className="w-10 h-10 rounded-full"
+                      width={40}
+                      height={40}
+                    />
+                    <Link
+                      href="/dashboard"
+                      className="text-emerald-600 hover:text-emerald-700 font-medium transition-all"
+                    >
+                      Acessar meu perfil
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3 pt-4 border-t">
+                    <Link href="/login">
+                      <button className="w-full px-6 py-2 bg-transparent border-2 border-emerald-600 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-all">
+                        Entrar
+                      </button>
+                    </Link>
+                    <Link href="/register">
+                      <button className="w-full px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md">
+                        Comece Agora
+                      </button>
+                    </Link>
+                  </div>
+                )}
               </nav>
             </div>
           </motion.div>

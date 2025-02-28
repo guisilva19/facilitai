@@ -18,6 +18,8 @@ export function useAuth() {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserAccount | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [fotoCookie, setFotoCookie] = useState<string | null>(null);
+  const [premiumCookie, setPremiumCookie] = useState<boolean>(false);
   const [loadingUser, setLoadingUser] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -28,8 +30,12 @@ export function useAuth() {
 
   const fetchUser = async () => {
     const savedToken = getCookie("auth_token");
+    const savedUserFoto = getCookie("auth_user_foto");
+    const savedUserPremium = getCookie("auth_user_premium");
 
     if (savedToken) {
+      setFotoCookie(savedUserFoto);
+      setPremiumCookie(Boolean(savedUserPremium));
       setToken(savedToken);
       const user = await getUser(savedToken);
       setUser(user);
@@ -84,6 +90,8 @@ export function useAuth() {
       }
 
       setCookie("auth_token", data.token, 1);
+      setCookie("auth_user_foto", data.user.foto, 1);
+      setCookie("auth_user_premium", data.user.isPremium, 1);
       setToken(data.token);
     } catch (err: any) {
       toast.error(err.message);
@@ -95,11 +103,23 @@ export function useAuth() {
 
   const logout = () => {
     deleteCookie("auth_token");
+    deleteCookie("auth_user_foto");
+    deleteCookie("auth_user_premium");
     setToken(null);
     router.replace("/");
   };
 
-  return { token, login, logout, loading, error, user, loadingUser };
+  return {
+    token,
+    login,
+    logout,
+    loading,
+    error,
+    user,
+    loadingUser,
+    premiumCookie,
+    fotoCookie,
+  };
 }
 
 const setCookie = (name: string, value: string, days: number) => {
@@ -108,7 +128,7 @@ const setCookie = (name: string, value: string, days: number) => {
   document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; secure; SameSite=Lax`;
 };
 
-const getCookie = (name: string) => {
+export const getCookie = (name: string) => {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? match[2] : null;
 };
