@@ -46,6 +46,8 @@ export default function Register() {
                   src={Facilitai}
                   alt="logo"
                   className="h-10 w-10 text-emerald-600 transition-transform group-hover:scale-110"
+                  width={10}
+                  height={10}
                 />
                 <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                   FACILITAI

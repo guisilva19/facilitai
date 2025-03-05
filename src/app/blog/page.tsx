@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
+"use client"
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -96,7 +96,7 @@ export default function BlogPage() {
                     </h2>
                     <p className="text-gray-600 mb-4">{post.excerpt}</p>
                     <Link
-                      href={`/blog/${post.id}`}
+                      href={`/blog`}
                       className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
                     >
                       Ler mais

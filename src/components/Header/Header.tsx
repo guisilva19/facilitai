@@ -1,22 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Crown, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getCookie } from "@/hook/useAuth";
-import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 import Image from "next/image";
 import Facilitai from "@/assets/logo.svg";
 
 export default function Header() {
-  const foto = getCookie("auth_user_foto");
-  const premium = Boolean(getCookie("auth_user_premium"));
-  const token = getCookie("auth_token");
+  const [foto, setFoto] = useState<string | null>(null);
+  const [premium, setPremium] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
-  console.log(premium);
-
-  const router = useRouter();
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setFoto(getCookie("auth_user_foto"));
+      setPremium(Boolean(getCookie("auth_user_premium")));
+      setToken(getCookie("auth_token"));
+    }
+  }, []);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -36,6 +39,8 @@ export default function Header() {
               src={Facilitai}
               alt="logo"
               className="h-10 w-10 text-emerald-600 transition-transform group-hover:scale-110"
+              width={40}
+                  height={40}
             />
             <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               FACILITAI
@@ -73,13 +78,13 @@ export default function Header() {
           ) : (
             <div className="hidden md:flex items-center">
               {!premium && (
-                <button
-                  onClick={() => router.push("/pricing")}
+                <Link
+                  href={"/pricing"}
                   className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
                 >
                   <Crown className="h-4 w-4 mr-2" />
                   Seja Premium
-                </button>
+                </Link>
               )}
               <Link href={"/dashboard"} className="flex items-center">
                 <Image

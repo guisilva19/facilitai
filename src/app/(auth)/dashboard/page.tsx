@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
 import {
@@ -22,14 +21,12 @@ import { motion } from "framer-motion";
 
 import Link from "next/link";
 import Loader from "@/components/Loader/Loader";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [editingProfile, setEditingProfile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const router = useRouter();
 
   const { logout, user, loadingUser } = useAuth();
 
@@ -92,13 +89,12 @@ export default function App() {
                 Torne-se premium e tenha acesso ilimitado a todas as
                 funcionalidades.
               </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
+              <Link
+                href="/princing"
                 className="px-6 py-2 bg-white text-amber-600 rounded-lg shadow-sm hover:shadow-md transition-all"
-                onClick={() => router.push("/pricing")}
               >
                 Ver Planos
-              </motion.button>
+              </Link>
             </div>
             <Crown className="h-16 w-16 opacity-90" />
           </div>
@@ -208,10 +204,12 @@ export default function App() {
       >
         <div className="flex flex-col items-center md:flex-row md:items-start space-y-4 md:space-y-0 md:space-x-8">
           <motion.div className="relative" variants={fadeInUp}>
-            <img
+            <Image
               src={mockUser.avatar}
               alt="Profile"
               className="w-24 sm:w-32 h-24 sm:h-32 rounded-full object-cover"
+              width={24}
+              height={24}
             />
             <motion.button
               className="absolute bottom-0 right-0 p-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors"
@@ -303,7 +301,7 @@ export default function App() {
   const renderSettings = () => (
     <motion.div initial="hidden" animate="visible" className="space-y-6">
       <motion.div
-        variants={fadeInUp} // Animar individualmente cada bloco de conteúdo
+        variants={fadeInUp}
         className="bg-white rounded-lg shadow-sm p-6"
       >
         <h3 className="text-lg font-semibold text-gray-900 mb-6">
@@ -412,20 +410,20 @@ export default function App() {
               <div className="flex items-center space-x-4">
                 <div className="hidden lg:flex items-center">
                   {!mockUser.isPremium && (
-                    <button
-                      onClick={() => {
-                        router.push("/pricing");
-                      }}
+                    <Link
+                      href={"/pricing"}
                       className="mr-4 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
                     >
                       <Crown className="h-4 w-4 mr-2" />
                       Seja Premium
-                    </button>
+                    </Link>
                   )}
-                  <img
+                  <Image
                     className="h-8 w-8 rounded-full"
                     src={mockUser.avatar}
-                    alt={mockUser.name}
+                    alt={mockUser.name || ""}
+                    width={40}
+                    height={40}
                   />
                 </div>
                 <button
